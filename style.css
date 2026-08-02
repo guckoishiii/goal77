@@ -1,153 +1,182 @@
-/* =========================
+/* =========================================
    GOAL77 Landing Page
-   ========================= */
+========================================= */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
 
 body{
-    margin:0;
+
     font-family:"Segoe UI",Tahoma,sans-serif;
     color:#fff;
 
     background:
-        linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.80)),
-        url("background.jpg");
+    linear-gradient(rgba(0,0,0,.45),rgba(0,0,0,.80)),
+    url("background.jpg");
 
     background-size:cover;
     background-position:center;
     background-repeat:no-repeat;
     background-attachment:fixed;
-}
 
-/* กล่องหลัก */
+}
 
 .wrap{
-    max-width:900px;
-    margin:auto;
-    padding:50px 20px;
-    text-align:center;
-}
 
-/* ชื่อกลุ่ม */
+    width:100%;
+    max-width:950px;
+
+    margin:auto;
+
+    text-align:center;
+
+    padding:50px 20px;
+
+}
 
 .brand{
-    font-size:32px;
-    font-weight:700;
-    color:#FFD700;
-    margin:0;
-    letter-spacing:1px;
-    text-shadow:
-        0 0 10px rgba(255,215,0,.6),
-        0 0 20px rgba(255,170,0,.4);
-}
 
-/* สนาม */
+    color:#FFD700;
+
+    font-size:34px;
+
+    font-weight:bold;
+
+    margin-bottom:15px;
+
+    text-shadow:
+    0 0 12px rgba(255,215,0,.7);
+
+}
 
 .location{
+
     font-size:22px;
+
     color:#ffffff;
-    margin:15px 0 40px;
-    opacity:.95;
+
+    margin-bottom:40px;
+
 }
 
-/* หัวข้อ */
-
 h1{
-    margin:0;
-    font-size:68px;
+
     color:#FFD700;
+
+    font-size:70px;
+
+    margin-bottom:5px;
+
     text-shadow:
-        0 0 15px rgba(255,200,0,.6),
-        3px 3px 8px #000;
+    0 0 18px rgba(255,180,0,.7),
+    3px 3px 8px #000;
+
 }
 
 h2{
-    margin:10px 0 35px;
-    font-size:60px;
-    color:#ff4d4d;
-    text-shadow:
-        0 0 15px rgba(255,0,0,.6),
-        3px 3px 8px #000;
-}
 
-/* รูปโปรโมต */
+    color:#ff4d4d;
+
+    font-size:62px;
+
+    margin-bottom:35px;
+
+    text-shadow:
+    0 0 18px rgba(255,0,0,.7),
+    3px 3px 8px #000;
+
+}
 
 .poster{
+
     width:100%;
+
     max-width:720px;
-    border-radius:18px;
+
     display:block;
-    margin:0 auto 40px;
+
+    margin:auto;
+
+    border-radius:18px;
 
     box-shadow:
-        0 10px 35px rgba(0,0,0,.60),
-        0 0 20px rgba(255,120,0,.30);
+    0 0 35px rgba(0,0,0,.7);
+
 }
 
-/* ปุ่ม LINE */
-
 .btn{
+
     display:inline-block;
 
+    margin-top:40px;
+
     background:#06C755;
+
     color:#fff;
 
     text-decoration:none;
 
-    padding:18px 42px;
+    padding:18px 45px;
 
     border-radius:12px;
 
-    font-size:22px;
+    font-size:24px;
+
     font-weight:bold;
 
     transition:.25s;
 
     box-shadow:
-        0 0 20px rgba(6,199,85,.35);
+    0 0 20px rgba(6,199,85,.45);
+
 }
 
 .btn:hover{
 
-    transform:translateY(-2px);
+    transform:scale(1.05);
 
     box-shadow:
-        0 0 28px rgba(6,199,85,.70);
+    0 0 30px rgba(6,199,85,.8);
 
 }
 
-/* มือถือ */
+/* Mobile */
 
 @media(max-width:768px){
 
-    .wrap{
-        padding:35px 15px;
-    }
+.brand{
 
-    .brand{
-        font-size:24px;
-    }
+    font-size:24px;
 
-    .location{
-        font-size:18px;
-        margin-bottom:25px;
-    }
+}
 
-    h1{
-        font-size:48px;
-    }
+.location{
 
-    h2{
-        font-size:42px;
-        margin-bottom:25px;
-    }
+    font-size:18px;
 
-    .poster{
-        border-radius:12px;
-    }
+}
 
-    .btn{
-        width:90%;
-        max-width:320px;
-        font-size:20px;
-    }
+h1{
+
+    font-size:48px;
+
+}
+
+h2{
+
+    font-size:42px;
+
+}
+
+.btn{
+
+    width:90%;
+
+    font-size:20px;
+
+}
 
 }
