@@ -1,5 +1,5 @@
 /* ======================================
-   GOAL77 Landing Page
+   GOAL77 Landing Page Final
 ====================================== */
 
 *{
@@ -9,19 +9,17 @@
 }
 
 body{
-
     font-family:"Segoe UI",Tahoma,sans-serif;
     color:#fff;
 
     background:
-    linear-gradient(rgba(0,0,0,.45),rgba(0,0,0,.80)),
-    url("background.jpg");
+        linear-gradient(rgba(0,0,0,.45),rgba(0,0,0,.80)),
+        url("background.jpg");
 
     background-size:cover;
     background-position:center;
     background-repeat:no-repeat;
     background-attachment:fixed;
-
 }
 
 .wrap{
@@ -35,7 +33,7 @@ body{
 
     padding:45px 25px;
 
-    background:rgba(0,0,0,.28);
+    background:rgba(0,0,0,.30);
 
     backdrop-filter:blur(8px);
 
@@ -44,36 +42,50 @@ body{
     border:1px solid rgba(255,255,255,.08);
 
     box-shadow:
-    0 0 40px rgba(0,0,0,.55);
+        0 0 40px rgba(0,0,0,.55);
 
 }
+
+/* ==========================
+   LOGO
+========================== */
 
 .logo{
+
     width:220px;
+
     max-width:70%;
+
     display:block;
+
     margin:0 auto 20px;
+
     filter:drop-shadow(0 8px 20px rgba(0,0,0,.55));
+
 }
+
+/* ==========================
+   TEXT
+========================== */
 
 .brand{
 
     color:#FFD700;
 
-    font-size:28px;
+    font-size:30px;
 
     font-weight:bold;
 
     margin-bottom:12px;
 
     text-shadow:
-    0 0 12px rgba(255,215,0,.7);
+        0 0 12px rgba(255,215,0,.7);
 
 }
 
 .location{
 
-    font-size:20px;
+    font-size:21px;
 
     color:#ffffff;
 
@@ -87,11 +99,11 @@ h1{
 
     font-size:72px;
 
-    margin-bottom:8px;
+    margin-bottom:10px;
 
     text-shadow:
-    0 0 18px rgba(255,180,0,.8),
-    3px 3px 8px #000;
+        0 0 18px rgba(255,180,0,.8),
+        3px 3px 8px #000;
 
 }
 
@@ -104,10 +116,14 @@ h2{
     margin-bottom:35px;
 
     text-shadow:
-    0 0 18px rgba(255,0,0,.8),
-    3px 3px 8px #000;
+        0 0 18px rgba(255,0,0,.8),
+        3px 3px 8px #000;
 
 }
+
+/* ==========================
+   POSTER
+========================== */
 
 .poster{
 
@@ -124,10 +140,13 @@ h2{
     border:3px solid rgba(255,255,255,.15);
 
     box-shadow:
-
-    0 15px 40px rgba(0,0,0,.65);
+        0 15px 40px rgba(0,0,0,.65);
 
 }
+
+/* ==========================
+   BUTTON
+========================== */
 
 .btn{
 
@@ -150,8 +169,7 @@ h2{
     transition:.25s;
 
     box-shadow:
-
-    0 0 25px rgba(6,199,85,.45);
+        0 0 25px rgba(6,199,85,.45);
 
 }
 
@@ -160,10 +178,124 @@ h2{
     transform:translateY(-3px) scale(1.04);
 
     box-shadow:
-
-    0 0 35px rgba(6,199,85,.8);
+        0 0 35px rgba(6,199,85,.8);
 
 }
+
+/* ==========================
+   PROMOTION
+========================== */
+
+.info-box{
+
+    max-width:900px;
+
+    margin:60px auto 20px;
+
+    background:rgba(0,0,0,.65);
+
+    border:2px solid rgba(255,215,0,.30);
+
+    border-radius:20px;
+
+    padding:35px;
+
+    text-align:left;
+
+    box-shadow:
+        0 0 30px rgba(0,0,0,.40);
+
+}
+
+.info-box h2{
+
+    text-align:center;
+
+    color:#FFD700;
+
+    font-size:36px;
+
+    margin-bottom:25px;
+
+}
+
+.notice{
+
+    background:#a00000;
+
+    color:#fff;
+
+    padding:18px;
+
+    border-radius:12px;
+
+    text-align:center;
+
+    font-size:21px;
+
+    font-weight:bold;
+
+    margin-bottom:30px;
+
+}
+
+.promo-card{
+
+    background:rgba(255,255,255,.05);
+
+    border-left:5px solid #FFD700;
+
+    padding:20px;
+
+    border-radius:12px;
+
+    margin-bottom:25px;
+
+}
+
+.promo-card h3{
+
+    color:#FFD700;
+
+    font-size:28px;
+
+    margin-bottom:15px;
+
+}
+
+.promo-item{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:12px 0;
+
+    border-bottom:1px solid rgba(255,255,255,.10);
+
+    font-size:20px;
+
+}
+
+.promo-item:last-child{
+
+    border-bottom:none;
+
+}
+
+.promo-item strong{
+
+    color:#00ff84;
+
+    font-size:24px;
+
+}
+
+/* ==========================
+   MOBILE
+========================== */
 
 @media(max-width:768px){
 
@@ -172,6 +304,12 @@ h2{
     margin:20px;
 
     padding:25px 15px;
+
+}
+
+.logo{
+
+    width:170px;
 
 }
 
@@ -214,6 +352,48 @@ h2{
     font-size:22px;
 
     padding:18px;
+
+}
+
+.info-box{
+
+    padding:20px;
+
+}
+
+.info-box h2{
+
+    font-size:25px;
+
+}
+
+.notice{
+
+    font-size:17px;
+
+}
+
+.promo-card h3{
+
+    font-size:21px;
+
+}
+
+.promo-item{
+
+    flex-direction:column;
+
+    align-items:flex-start;
+
+    gap:6px;
+
+    font-size:17px;
+
+}
+
+.promo-item strong{
+
+    font-size:21px;
 
 }
 
