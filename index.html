@@ -101,38 +101,39 @@ class="btn">
 
 <script src="config.js"></script>
 
-<script>
-
-document.getElementById("brand").textContent = DATA.brand;
-
-document.getElementById("stadium").textContent = DATA.stadium;
-
-document.getElementById("pairs").textContent = DATA.pairs + " คู่ชน";
-
-document.getElementById("poster").src = DATA.image;
-
-document.getElementById("line").href = DATA.line;
-
 switch(DATA.status){
 
 case 1:
 
-document.getElementById("status").textContent="🐣 ไก่กำลังเคียง";
+    document.getElementById("status").textContent =
+    "🐣 ไก่กำลังเคียง";
 
-break;
+    document.getElementById("pairs").style.display = "none";
+
+    break;
 
 case 2:
 
-document.getElementById("status").textContent=
-"🐥 ตอนนี้เคียงได้ "+DATA.pairs+" คู่ มีเคียงเพิ่ม";
+    document.getElementById("status").textContent =
+    "🐥 ตอนนี้เคียงได้ " + DATA.pairs + " คู่ มีเคียงเพิ่ม";
 
-document.getElementById("pairs").style.display="none";
+    document.getElementById("pairs").style.display = "none";
 
-break;
+    break;
+
+case 3:
 
 default:
 
-document.getElementById("status").textContent="🐓 ไก่ลงแล้ว!!";
+    document.getElementById("status").textContent =
+    "🐓 ไก่ลงแล้ว!!";
+
+    document.getElementById("pairs").textContent =
+    DATA.pairs + " คู่ชน";
+
+    document.getElementById("pairs").style.display = "block";
+
+    break;
 
 }
 
