@@ -48,6 +48,14 @@ body{
 
 }
 
+.logo{
+    width:220px;
+    max-width:70%;
+    display:block;
+    margin:0 auto 20px;
+    filter:drop-shadow(0 8px 20px rgba(0,0,0,.55));
+}
+
 .brand{
 
     color:#FFD700;
