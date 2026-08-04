@@ -103,7 +103,9 @@
 
 <script>
 
+// =========================
 // โหลดข้อมูลจาก config.js
+// =========================
 
 document.getElementById("brand").textContent = DATA.brand;
 
@@ -115,11 +117,32 @@ document.getElementById("poster").alt = DATA.brand;
 
 document.getElementById("line").href = DATA.line;
 
-// แสดงสถานะ
+// =========================
+// เปลี่ยน Title
+// =========================
+
+document.title = DATA.brand;
+
+// =========================
+// เปลี่ยน Description
+// =========================
+
+document.querySelector('meta[name="description"]').setAttribute(
+    "content",
+    DATA.stadium
+);
+
+// =========================
+// เปลี่ยน OG ตาม Status
+// =========================
+
+let ogTitle = "";
 
 switch(DATA.status){
 
     case 1:
+
+        ogTitle = "🐣 ไก่กำลังเคียง";
 
         document.getElementById("status").textContent =
         "🐣 ไก่กำลังเคียง";
@@ -130,8 +153,11 @@ switch(DATA.status){
 
     case 2:
 
-        document.getElementById("status").textContent =
+        ogTitle =
         "🐥 ตอนนี้เคียงได้ " + DATA.pairs + " คู่ มีเคียงเพิ่ม";
+
+        document.getElementById("status").textContent =
+        ogTitle;
 
         document.getElementById("pairs").style.display = "none";
 
@@ -141,17 +167,38 @@ switch(DATA.status){
 
     default:
 
+        ogTitle = "🐓 ไก่ลงแล้ว!!";
+
         document.getElementById("status").textContent =
-        "🐓 ไก่ลงแล้ว!!";
+        ogTitle;
 
         document.getElementById("pairs").textContent =
-         "📋 สรุปไก่ทั้งหมด " + DATA.pairs + " คู่ชน";
+        "📋 สรุปไก่ทั้งหมด " + DATA.pairs + " คู่ชน";
 
         document.getElementById("pairs").style.display = "block";
 
         break;
 
 }
+
+// =========================
+// เปลี่ยน META
+// =========================
+
+document.querySelector('meta[property="og:title"]')
+.setAttribute("content", ogTitle);
+
+document.querySelector('meta[property="og:description"]')
+.setAttribute("content", DATA.stadium);
+
+document.querySelector('meta[property="og:image"]')
+.setAttribute(
+    "content",
+    "https://guckoishiii.github.io/goal77/" +
+    DATA.image +
+    "?v=" +
+    Date.now()
+);
 
 </script>
 
