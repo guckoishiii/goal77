@@ -1,19 +1,9 @@
 const DATA = {
-
-    brand: "กลุ่มไก่ใต้ GOAL77 โปรโมชั่นคืนยอดเสีย",
-
-    stadium: "สนามหลานตาแหล้ม จ.พัทลุง รายการพิเศษ คนแก่หัดเลี้ยง&สหายสุรา",
-
-    pairs: 23,
-
-    // 1 = ไก่กำลังเคียง
-    // 2 = ตอนนี้เคียงได้...คู่ มีเคียงเพิ่ม
-    // 3 = ไก่ลงแล้ว!!
-
-    status: 3,
-
-    image: "og-image.jpg",
-
-    line: "https://lin.ee/Lklfa53"
-
+  brand: "กลุ่มไก่ใต้ GOAL77 โปรโมชั่นคืนยอดเสีย",
+  stadium: "",
+  pairs: 22,
+  status: 3,
+  image: "og-image.jpg",
+  logo: "logo.png",
+  line: "https://lin.ee/Lklfa53"
 };
