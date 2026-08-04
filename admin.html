@@ -26,6 +26,7 @@
     .publish:hover { background: #0756b1; }
     .help { margin: 22px 0 0; color: #bbb; font-size: 14px; line-height: 1.5; }
     #publishStatus { min-height: 24px; margin: 14px 0 0; text-align: center; color: #ffd700; font-weight: 700; }
+    #publishStatus a { display: inline-block; margin-top: 8px; color: #fff; text-decoration: underline; }
   </style>
 </head>
 <body>
@@ -189,7 +190,11 @@
           await putFile("og-image.jpg", base64FromBytes(new Uint8Array(await selectedImage.arrayBuffer())), token);
           await putFile("config.js", base64FromText(config(d)), token);
           await putFile("index.html", base64FromText(indexHtml(d)), token);
-          statusBox.textContent = "อัปเดตสำเร็จ! รอ GitHub Pages ประมาณ 1–2 นาที";
+          statusBox.replaceChildren(
+            document.createTextNode("อัปเดตสำเร็จ! รอ GitHub Pages ประมาณ 1–2 นาที"),
+            document.createElement("br"),
+            Object.assign(document.createElement("a"), { href: "https://guckoishiii.github.io/goal77/", target: "_blank", rel: "noopener noreferrer", textContent: "เปิดหน้าเว็บจริง ↗" })
+          );
           $("githubToken").value = "";
         } catch (error) {
           statusBox.textContent = `อัปเดตไม่สำเร็จ: ${error.message}`;
