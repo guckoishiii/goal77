@@ -10,7 +10,7 @@ const DATA = {
     // 2 = ตอนนี้เคียงได้...คู่ มีเคียงเพิ่ม
     // 3 = ไก่ลงแล้ว!!
 
-    status: 2,
+    status: 3,
 
     image: "og-image.jpg",
 
