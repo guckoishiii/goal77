@@ -1,3 +1,7 @@
+/* ===========================================
+   GOAL77 Admin v2.2 FINAL
+=========================================== */
+
 *{
     margin:0;
     padding:0;
@@ -6,19 +10,19 @@
 
 body{
 
-    font-family:"Segoe UI",Tahoma,sans-serif;
-
     background:#111;
 
     color:#fff;
+
+    font-family:
+    "Segoe UI",
+    sans-serif;
 
 }
 
 .container{
 
-    width:100%;
-
-    max-width:900px;
+    width:min(920px,100%);
 
     margin:40px auto;
 
@@ -28,23 +32,29 @@ body{
 
 h1{
 
-    text-align:center;
-
     color:#FFD700;
 
+    text-align:center;
+
     margin-bottom:25px;
+
+    font-size:34px;
 
 }
 
 .card{
 
-    background:#1b1b1b;
+    background:#1B1B1B;
 
-    border-radius:15px;
+    border-radius:18px;
 
-    padding:25px;
+    padding:28px;
 
-    box-shadow:0 0 25px rgba(0,0,0,.45);
+    box-shadow:
+
+    0 0 30px
+
+    rgba(0,0,0,.45);
 
 }
 
@@ -52,7 +62,7 @@ label{
 
     display:block;
 
-    margin-top:18px;
+    margin-top:20px;
 
     margin-bottom:8px;
 
@@ -61,19 +71,18 @@ label{
 }
 
 input,
+
 select{
 
     width:100%;
 
-    padding:12px;
+    padding:14px;
 
     border:none;
 
-    border-radius:8px;
+    border-radius:10px;
 
     font-size:16px;
-
-    outline:none;
 
 }
 
@@ -83,31 +92,53 @@ input[type=file]{
 
     color:#fff;
 
-    cursor:pointer;
+}
+
+input:focus,
+
+select:focus{
+
+    outline:none;
+
+    box-shadow:
+
+    0 0 0 3px
+
+    #06C75555;
 
 }
 
 hr{
 
-    margin:30px 0;
+    margin:35px 0;
 
     border:none;
 
-    border-top:1px solid #444;
+    border-top:
+
+    1px solid #444;
 
 }
 
+/* =====================
+   Preview
+===================== */
+
 .preview{
 
-    background:#101010;
+    margin-top:20px;
 
-    border-radius:15px;
-
-    padding:25px;
+    padding:30px;
 
     text-align:center;
 
-    border:1px solid #333;
+    background:#101010;
+
+    border-radius:16px;
+
+    border:
+
+    1px solid #333;
 
 }
 
@@ -115,7 +146,7 @@ hr{
 
     color:#FFD700;
 
-    font-size:22px;
+    font-size:24px;
 
     font-weight:bold;
 
@@ -125,7 +156,7 @@ hr{
 
 .preview-stadium{
 
-    font-size:18px;
+    font-size:20px;
 
     margin-bottom:20px;
 
@@ -135,19 +166,11 @@ hr{
 
     color:#FFD700;
 
-    font-size:36px;
-
-    margin-bottom:15px;
-
-}
-
-#previewPairs{
-
-    color:#ff4d4d;
-
-    font-size:28px;
+    font-size:34px;
 
     margin-bottom:20px;
+
+    line-height:1.6;
 
 }
 
@@ -157,13 +180,19 @@ hr{
 
     max-width:650px;
 
-    border-radius:15px;
+    border-radius:16px;
 
-    border:2px solid #333;
+    border:
+
+    2px solid #333;
 
 }
 
-button{
+/* =====================
+   Publish
+===================== */
+
+.publish{
 
     width:100%;
 
@@ -171,54 +200,158 @@ button{
 
     padding:18px;
 
-    font-size:22px;
+    border:none;
 
-    font-weight:bold;
+    border-radius:12px;
+
+    background:#0969DA;
 
     color:#fff;
 
-    background:#06C755;
+    font-size:24px;
 
-    border:none;
-
-    border-radius:10px;
+    font-weight:bold;
 
     cursor:pointer;
 
-    transition:.2s;
+    transition:.25s;
 
 }
 
-button:hover{
+.publish:hover{
 
-    background:#05a84a;
+    background:#0756B1;
 
 }
+
+.publish:disabled{
+
+    background:#444;
+
+    cursor:not-allowed;
+
+}
+
+/* =====================
+   Progress
+===================== */
+
+#progress{
+
+    margin-top:20px;
+
+    padding:14px;
+
+    border-radius:10px;
+
+    background:#0F0F0F;
+
+    border:
+
+    1px solid #333;
+
+    text-align:center;
+
+    color:#FFD700;
+
+    font-weight:bold;
+
+}
+
+/* =====================
+   Publish Log
+===================== */
+
+#publishLog{
+
+    margin-top:18px;
+
+    background:#0D0D0D;
+
+    border-radius:10px;
+
+    border:
+
+    1px solid #333;
+
+    padding:18px;
+
+    max-height:250px;
+
+    overflow:auto;
+
+    font-size:14px;
+
+    line-height:1.8;
+
+    color:#8CFF8C;
+
+}
+
+#publishLog div{
+
+    margin-bottom:6px;
+
+}
+
+/* =====================
+   Publish Status
+===================== */
+
+#publishStatus{
+
+    margin-top:18px;
+
+    text-align:center;
+
+    color:#FFD700;
+
+    font-size:18px;
+
+    font-weight:bold;
+
+}
+
+#publishStatus a{
+
+    color:#fff;
+
+}
+
+/* =====================
+   Mobile
+===================== */
 
 @media(max-width:768px){
 
-    .container{
+.container{
 
-        padding:15px;
+    padding:12px;
 
-    }
+}
 
-    #previewStatus{
+.card{
 
-        font-size:28px;
+    padding:18px;
 
-    }
+}
 
-    #previewPairs{
+h1{
 
-        font-size:22px;
+    font-size:28px;
 
-    }
+}
 
-    button{
+#previewStatus{
 
-        font-size:18px;
+    font-size:28px;
 
-    }
+}
+
+.publish{
+
+    font-size:20px;
+
+}
 
 }
