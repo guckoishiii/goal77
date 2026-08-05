@@ -1,152 +1,876 @@
-// GOAL77 Admin v2.1 FINAL
-// Uses template.js to download a static index.html for LINE Open Graph previews.
-(function () {
-  "use strict";
+"use strict";
 
-  const byId = (id) => document.getElementById(id);
-  const stadium = byId("stadium");
-  const status = byId("status");
-  const pairs = byId("pairs");
-  const image = byId("image");
-  const previewStadium = byId("previewStadium");
-  const previewStatus = byId("previewStatus");
-  const previewPairs = byId("previewPairs");
-  const previewImage = byId("previewImage");
-  const generateConfigButton = byId("generate");
+/* ==========================
+   GOAL77 Admin v2.2 FINAL
+   admin.js (Part 1/4)
+========================== */
 
-  if (!stadium || !status || !pairs || !previewStadium || !previewStatus || !previewPairs || !generateConfigButton) {
-    console.error("GOAL77 Admin: required form elements are missing.");
-    return;
-  }
+const $ = (id) => document.getElementById(id);
 
-  let previewObjectUrl = null;
+const stadium = $("stadium");
+const status = $("status");
+const pairs = $("pairs");
+const image = $("image");
+const imageVersion = $("imageVersion");
+const githubToken = $("githubToken");
 
-  function bangkokDate() {
-    const parts = new Intl.DateTimeFormat("en-CA", {
-      timeZone: "Asia/Bangkok", year: "numeric", month: "2-digit", day: "2-digit"
-    }).formatToParts(new Date()).reduce((out, part) => {
-      if (part.type !== "literal") out[part.type] = part.value;
-      return out;
-    }, {});
-    return `${parts.year}${parts.month}${parts.day}`;
-  }
+const previewStadium = $("previewStadium");
+const previewStatus = $("previewStatus");
+const previewImage = $("previewImage");
 
-  function ensureImageVersionInput() {
-    let field = byId("imageVersion");
-    if (field) return field;
-    const label = document.createElement("label");
-    label.htmlFor = "imageVersion";
-    label.textContent = "รหัสรูปใหม่ (v=)";
-    field = document.createElement("input");
-    field.id = "imageVersion";
-    field.type = "text";
-    field.value = bangkokDate();
-    field.placeholder = "เช่น 20260804 หรือ 20260804-2";
-    const anchor = image && image.parentNode;
-    if (anchor) {
-      anchor.insertBefore(label, image.nextSibling);
-      anchor.insertBefore(field, label.nextSibling);
-    }
-    return field;
-  }
+const progress = $("progress");
+const publishLog = $("publishLog");
 
-  const imageVersion = ensureImageVersionInput();
+/* ==========================
+   Bangkok Date
+========================== */
 
-  function ensureIndexButton() {
-    let button = byId("downloadIndex");
-    if (button) return button;
-    button = document.createElement("button");
-    button.id = "downloadIndex";
-    button.type = "button";
-    button.textContent = "🌐 Download index.html";
-    generateConfigButton.insertAdjacentElement("afterend", button);
-    return button;
-  }
+function bangkokDate() {
 
-  const downloadIndexButton = ensureIndexButton();
+    const parts = new Intl.DateTimeFormat(
+        "en-CA",
+        {
+            timeZone: "Asia/Bangkok",
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit"
+        }
+    ).formatToParts(new Date());
 
-  function values() {
+    const obj = {};
+
+    parts.forEach(p => {
+
+        if (p.type !== "literal") {
+
+            obj[p.type] = p.value;
+
+        }
+
+    });
+
+    return obj.year + obj.month + obj.day;
+
+}
+
+if (!imageVersion.value) {
+
+    imageVersion.value = bangkokDate();
+
+}
+
+/* ==========================
+   Current Data
+========================== */
+
+function getData() {
+
     return {
-      stadium: stadium.value.trim(),
-      status: Number(status.value),
-      pairs: Math.max(0, Number.parseInt(pairs.value, 10) || 0),
-      imageVersion: imageVersion.value.trim() || bangkokDate()
+
+        brand: "กลุ่มไก่ใต้ GOAL77 โปรโมชั่นคืนยอดเสีย",
+
+        stadium:
+            stadium.value.trim(),
+
+        status:
+            Number(status.value),
+
+        pairs:
+            parseInt(pairs.value) || 0,
+
+        image:
+            "og-image.jpg",
+
+        version:
+            imageVersion.value.trim() || bangkokDate(),
+
+        line:
+            "https://lin.ee/Lklfa53"
+
     };
-  }
 
-  function getStatusText(data) {
-    if (data.status === 1) return "🐣 ไก่กำลังเคียง";
-    if (data.status === 2) return `🐥 ตอนนี้เคียงได้ ${data.pairs} คู่ มีเคียงเพิ่ม`;
-    return "🐓 ไก่ลงแล้ว!!";
-  }
+}
 
-  function updatePreview() {
-    const data = values();
-    previewStadium.textContent = data.stadium || "-";
-    previewStatus.textContent = getStatusText(data);
-    const showPairs = data.status === 3;
-    previewPairs.hidden = !showPairs;
-    previewPairs.textContent = `📋 สรุปไก่ทั้งหมด ${data.pairs} คู่ชน`;
-  }
+/* ==========================
+   Status Text
+========================== */
 
-  function download(filename, content, type) {
-    const blob = new Blob([content], { type: type || "text/plain;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = filename;
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
-  }
+function statusText(data) {
 
-  function jsString(value) {
-    return JSON.stringify(value).replace(/</g, "\\u003c");
-  }
+    switch (data.status) {
 
-  function buildConfig(data) {
-    return `const DATA = {\n  brand: ${jsString("กลุ่มไก่ใต้ GOAL77 โปรโมชั่นคืนยอดเสีย")},\n  stadium: ${jsString(data.stadium)},\n  pairs: ${data.pairs},\n  status: ${data.status},\n  image: "og-image.jpg",\n  logo: "logo.png",\n  line: "https://lin.ee/Lklfa53"\n};\n`;
-  }
+        case 1:
 
-  function loadTemplate(callback) {
-    if (typeof window.GOAL77_INDEX_TEMPLATE === "function") return callback();
-    let script = document.querySelector('script[data-goal77-template]');
-    if (!script) {
-      script = document.createElement("script");
-      script.src = "template.js";
-      script.defer = true;
-      script.dataset.goal77Template = "true";
-      document.head.appendChild(script);
+            return "🐣 ไก่กำลังเคียง";
+
+        case 2:
+
+            return `🐥 ตอนนี้เคียงได้ ${data.pairs} คู่ มีเคียงเพิ่ม`;
+
+        case 3:
+
+            return `✅ สรุปไก่ทั้งหมด ${data.pairs} คู่ !!!`;
+
+        case 4:
+
+            return `✅ สรุปไก่ทั้งหมด ${data.pairs} คู่ !!!<br>🐓 ไก่ลงแล้ว!!`;
+
+        default:
+
+            return "";
+
     }
-    script.addEventListener("load", callback, { once: true });
-    script.addEventListener("error", () => alert("ไม่พบ template.js กรุณาวางไฟล์นี้ไว้โฟลเดอร์เดียวกับ admin.html"), { once: true });
-  }
 
-  if (image) {
-    image.addEventListener("change", () => {
-      const file = image.files && image.files[0];
-      if (!file || !previewImage) return;
-      if (previewObjectUrl) URL.revokeObjectURL(previewObjectUrl);
-      previewObjectUrl = URL.createObjectURL(file);
-      previewImage.src = previewObjectUrl;
-    });
-  }
+}
 
-  [stadium, status, pairs, imageVersion].forEach((field) => {
-    field.addEventListener("input", updatePreview);
-    field.addEventListener("change", updatePreview);
-  });
+/* ==========================
+   Preview
+========================== */
 
-  generateConfigButton.addEventListener("click", () => download("config.js", buildConfig(values()), "text/javascript;charset=utf-8"));
+function updatePreview() {
 
-  downloadIndexButton.addEventListener("click", () => {
-    loadTemplate(() => {
-      if (typeof window.GOAL77_INDEX_TEMPLATE !== "function") return;
-      download("index.html", window.GOAL77_INDEX_TEMPLATE(values()), "text/html;charset=utf-8");
-    });
-  });
+    const data = getData();
 
-  updatePreview();
-  loadTemplate(() => {});
-}());
+    previewStadium.textContent =
+        data.stadium || "-";
+
+    if (data.status === 4) {
+
+        previewStatus.innerHTML =
+            statusText(data);
+
+    } else {
+
+        previewStatus.textContent =
+            statusText(data);
+
+    }
+
+}
+
+/* ==========================
+   Preview Image
+========================== */
+
+image.addEventListener("change", () => {
+
+    const file = image.files[0];
+
+    if (!file) return;
+
+    previewImage.src =
+        URL.createObjectURL(file);
+
+});
+
+/* ==========================
+   Auto Refresh
+========================== */
+
+[
+    stadium,
+    status,
+    pairs,
+    imageVersion
+].forEach(el => {
+
+    el.addEventListener("input", updatePreview);
+
+    el.addEventListener("change", updatePreview);
+
+});
+
+updatePreview();
+
+/* ==========================
+   Download File
+========================== */
+
+function downloadFile(filename, content, type) {
+
+    const blob = new Blob(
+        [content],
+        {
+            type: type
+        }
+    );
+
+    const url =
+        URL.createObjectURL(blob);
+
+    const a =
+        document.createElement("a");
+
+    a.href = url;
+
+    a.download = filename;
+
+    document.body.appendChild(a);
+
+    a.click();
+
+    a.remove();
+
+    setTimeout(() => {
+
+        URL.revokeObjectURL(url);
+
+    },1000);
+
+}
+
+/* ==========================
+   Escape HTML
+========================== */
+
+function escapeHtml(str){
+
+    return String(str)
+
+    .replace(/&/g,"&amp;")
+
+    .replace(/</g,"&lt;")
+
+    .replace(/>/g,"&gt;")
+
+    .replace(/"/g,"&quot;")
+
+    .replace(/'/g,"&#39;");
+
+}
+
+/* ==========================
+   JSON Safe
+========================== */
+
+function js(value){
+
+    return JSON.stringify(value)
+
+    .replace(/</g,"\\u003c");
+
+}
+
+/* ==========================
+   Generate config.js
+========================== */
+
+function generateConfig(){
+
+    const d =
+        getData();
+
+    return `const DATA = {
+
+    brand : ${js(d.brand)},
+
+    stadium : ${js(d.stadium)},
+
+    status : ${d.status},
+
+    pairs : ${d.pairs},
+
+    image : "og-image.jpg",
+
+    logo : "logo.png",
+
+    line : "${d.line}"
+
+};`;
+
+}
+
+/* ==========================
+   Download config.js
+========================== */
+
+function downloadConfig(){
+
+    downloadFile(
+
+        "config.js",
+
+        generateConfig(),
+
+        "text/javascript;charset=utf-8"
+
+    );
+
+}
+
+/* ==========================
+   Version String
+========================== */
+
+function imageVersionString(){
+
+    return imageVersion.value.trim()
+
+    ||
+
+    bangkokDate();
+
+}
+
+/* ==========================
+   Site URL
+========================== */
+
+const SITE_URL =
+"https://guckoishiii.github.io/goal77/";
+
+/* ==========================
+   Image URL
+========================== */
+
+function imageUrl(){
+
+    return SITE_URL +
+
+    "og-image.jpg?v=" +
+
+    encodeURIComponent(
+
+        imageVersionString()
+
+    );
+
+}
+
+/* =====================================================
+   Part 3/4
+   Generate index.html
+===================================================== */
+
+function generateIndex() {
+
+    const d = getData();
+
+    return `<!DOCTYPE html>
+<html lang="th">
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>\${escapeHtml(d.brand)}</title>
+
+<meta name="description"
+content="\${escapeHtml(d.stadium)}">
+
+<meta property="og:type"
+content="website">
+
+<meta property="og:title"
+content="\${escapeHtml(statusText(d).replace(/<br>/g," "))}">
+
+<meta property="og:description"
+content="\${escapeHtml(d.stadium)}">
+
+<meta property="og:image"
+content="\${imageUrl()}">
+
+<meta property="og:url"
+content="\${SITE_URL}">
+
+<meta name="twitter:card"
+content="summary_large_image">
+
+<link rel="stylesheet"
+href="style.css">
+
+</head>
+
+<body>
+
+<div class="wrap">
+
+<img src="logo.png"
+class="logo">
+
+<p
+class="brand"
+id="brand"></p>
+
+<p
+class="location"
+id="stadium"></p>
+
+<h1 id="status"></h1>
+
+<h2 id="pairs"></h2>
+
+<img
+id="poster"
+class="poster">
+
+<a
+id="line"
+class="btn">
+
+📲 เข้ากลุ่ม LINE
+
+</a>
+
+<div class="info-box">
+
+<h2>
+
+🔥 กลุ่มไก่ใต้ GOAL77 โปรโมชั่นคืนยอดเสีย 🔥
+
+</h2>
+
+</div>
+
+</div>
+
+<script src="config.js"><\/script>
+
+<script>
+
+(function(){
+
+const d = DATA;
+
+document.getElementById("brand").textContent =
+d.brand;
+
+document.getElementById("stadium").textContent =
+d.stadium;
+
+document.getElementById("poster").src =
+d.image;
+
+document.getElementById("line").href =
+d.line;
+
+const status =
+document.getElementById("status");
+
+const pairs =
+document.getElementById("pairs");
+
+switch(Number(d.status)){
+
+case 1:
+
+status.textContent =
+"🐣 ไก่กำลังเคียง";
+
+pairs.style.display =
+"none";
+
+break;
+
+case 2:
+
+status.textContent =
+"🐥 ตอนนี้เคียงได้ " +
+d.pairs +
+" คู่ มีเคียงเพิ่ม";
+
+pairs.style.display =
+"none";
+
+break;
+
+case 3:
+
+status.textContent =
+"✅ สรุปไก่ทั้งหมด " +
+d.pairs +
+" คู่ !!!";
+
+pairs.style.display =
+"none";
+
+break;
+
+case 4:
+
+status.innerHTML =
+"✅ สรุปไก่ทั้งหมด " +
+d.pairs +
+" คู่ !!!<br>🐓 ไก่ลง
+
+/* =====================================================
+   Part 4/4
+   GitHub Publish + Token + Progress
+===================================================== */
+
+const REPO_OWNER = "guckoishiii";
+const REPO_NAME = "goal77";
+const BRANCH = "main";
+
+/* ==========================
+   Log
+========================== */
+
+function addLog(text){
+
+    const time =
+        new Date().toLocaleTimeString("th-TH");
+
+    publishLog.innerHTML +=
+        `<div>[${time}] ${text}</div>`;
+
+    publishLog.scrollTop =
+        publishLog.scrollHeight;
+
+}
+
+/* ==========================
+   Progress
+========================== */
+
+function setProgress(text){
+
+    progress.innerHTML =
+        `<b>${text}</b>`;
+
+}
+
+/* ==========================
+   Save Token
+========================== */
+
+if(localStorage.getItem("goal77_token")){
+
+    githubToken.value =
+        localStorage.getItem("goal77_token");
+
+}
+
+githubToken.addEventListener("change",()=>{
+
+    localStorage.setItem(
+
+        "goal77_token",
+
+        githubToken.value.trim()
+
+    );
+
+});
+
+/* ==========================
+   Base64
+========================== */
+
+function base64Bytes(bytes){
+
+    let binary="";
+
+    const size=0x8000;
+
+    for(
+
+        let i=0;
+
+        i<bytes.length;
+
+        i+=size
+
+    ){
+
+        binary+=String.fromCharCode(
+
+            ...bytes.subarray(i,i+size)
+
+        );
+
+    }
+
+    return btoa(binary);
+
+}
+
+function base64Text(text){
+
+    return base64Bytes(
+
+        new TextEncoder()
+
+        .encode(text)
+
+    );
+
+}
+
+/* ==========================
+   SHA
+========================== */
+
+async function getSha(path){
+
+    const r=await fetch(
+
+`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${path}?ref=${BRANCH}`,
+
+{
+
+headers:{
+
+Authorization:
+
+`Bearer ${githubToken.value.trim()}`
+
+}
+
+}
+
+);
+
+    if(r.status===404)
+
+        return null;
+
+    if(!r.ok)
+
+        throw new Error(path);
+
+    return (await r.json()).sha;
+
+}
+
+/* ==========================
+   Upload File
+========================== */
+
+async function uploadFile(
+
+path,
+
+content
+
+){
+
+    const sha=
+
+    await getSha(path);
+
+    const r=
+
+    await fetch(
+
+`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${path}`,
+
+{
+
+method:"PUT",
+
+headers:{
+
+Authorization:
+
+`Bearer ${githubToken.value.trim()}`,
+
+"Content-Type":
+
+"application/json"
+
+},
+
+body:JSON.stringify({
+
+message:
+
+"Update GOAL77",
+
+branch:BRANCH,
+
+content,
+
+...(sha?{sha}:{})
+
+})
+
+}
+
+);
+
+    if(!r.ok){
+
+        throw new Error(path);
+
+    }
+
+}
+
+/* ==========================
+   Publish
+========================== */
+
+document
+
+.getElementById("publish")
+
+.addEventListener(
+
+"click",
+
+async()=>{
+
+try{
+
+publishLog.innerHTML="";
+
+setProgress(
+
+"เริ่ม Publish..."
+
+);
+
+addLog("เริ่ม");
+
+const img=
+
+image.files[0];
+
+if(!img)
+
+throw new Error(
+
+"กรุณาเลือกรูป"
+
+);
+
+setProgress(
+
+"Upload Poster..."
+
+);
+
+await uploadFile(
+
+"og-image.jpg",
+
+base64Bytes(
+
+new Uint8Array(
+
+await img.arrayBuffer()
+
+)
+
+)
+
+);
+
+addLog(
+
+"✔ Poster"
+
+);
+
+setProgress(
+
+"Upload config.js"
+
+);
+
+await uploadFile(
+
+"config.js",
+
+base64Text(
+
+generateConfig()
+
+)
+
+);
+
+addLog(
+
+"✔ config.js"
+
+);
+
+setProgress(
+
+"Upload index.html"
+
+);
+
+await uploadFile(
+
+"index.html",
+
+base64Text(
+
+generateIndex()
+
+)
+
+);
+
+addLog(
+
+"✔ index.html"
+
+);
+
+setProgress(
+
+"เสร็จแล้ว"
+
+);
+
+addLog(
+
+"🎉 Publish Success"
+
+);
+
+document
+
+.getElementById(
+
+"publishStatus"
+
+)
+
+.innerHTML=
+
+`<b>
+
+✅ Publish สำเร็จ
+
+</b>
+
+<br><br>
+
+<a
+
+href="${SITE_URL}"
+
+target="_blank">
+
+🌐 เปิดเว็บไซต์
+
+</a>`;
+
+}catch(err){
+
+setProgress("ผิดพลาด");
+
+addLog(
+
+"❌ "+err.message
+
+);
+
+alert(
+
+err.message
+
+);
+
+}
+
+}
+
+);
