@@ -90,11 +90,81 @@
       }
       version.value = bangkokDate();
       function data() { return { stadium: stadium.value.trim(), status: Number(status.value), pairs: Math.max(0, parseInt(pairs.value, 10) || 0), imageVersion: version.value.trim() || bangkokDate() }; }
-      function statusText(d) { return d.status === 1 ? "🐣 ไก่กำลังเคียง" : d.status === 2 ? `🐥 ตอนนี้เคียงได้ ${d.pairs} คู่ มีเคียงเพิ่ม` : "🐓 ไก่ลงแล้ว!!"; }
-      function updatePreview() {
-        const d = data(); previewStadium.textContent = d.stadium || "-"; previewStatus.textContent = statusText(d);
-        previewPairs.hidden = d.status !== 3; previewPairs.textContent = `📋 สรุปไก่ทั้งหมด ${d.pairs} คู่ชน`;
-      }
+    function statusText(d){
+
+    switch(d.status){
+
+        case 1:
+
+            return "🐣 ไก่กำลังเคียง";
+
+        case 2:
+
+            return `🐥 ตอนนี้เคียงได้ ${d.pairs} คู่ มีเคียงเพิ่ม`;
+
+        case 3:
+
+            return `✅ สรุปไก่ทั้งหมด ${d.pairs} คู่ !!!`;
+
+        case 4:
+
+            return "🐓 ไก่ลงแล้ว!!";
+
+        default:
+
+            return "";
+
+    }
+
+}
+      ffunction updatePreview(){
+
+    const d = data();
+
+    previewStadium.textContent =
+    d.stadium || "-";
+
+    switch(d.status){
+
+        case 1:
+
+            previewStatus.textContent =
+            "🐣 ไก่กำลังเคียง";
+
+            previewPairs.hidden = true;
+
+            break;
+
+        case 2:
+
+            previewStatus.textContent =
+            `🐥 ตอนนี้เคียงได้ ${d.pairs} คู่ มีเคียงเพิ่ม`;
+
+            previewPairs.hidden = true;
+
+            break;
+
+        case 3:
+
+            previewStatus.textContent =
+            `✅ สรุปไก่ทั้งหมด ${d.pairs} คู่ !!!`;
+
+            previewPairs.hidden = true;
+
+            break;
+
+        case 4:
+
+            previewStatus.innerHTML =
+            `✅ สรุปไก่ทั้งหมด ${d.pairs} คู่ !!!<br>🐓 ไก่ลงแล้ว!!`;
+
+            previewPairs.hidden = true;
+
+            break;
+
+    }
+
+}
       function download(name, text, type) {
         const url = URL.createObjectURL(new Blob([text], { type })), a = document.createElement("a");
         a.href = url; a.download = name; document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000);
