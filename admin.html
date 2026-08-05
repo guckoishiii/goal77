@@ -1,126 +1,207 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>GOAL77 Admin v2.2 FINAL</title>
-
-    <link rel="stylesheet" href="admin.css">
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GOAL77 Admin v2.1 FINAL</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #111; color: #fff; font-family: "Segoe UI", Tahoma, sans-serif; }
+    .container { width: min(900px, 100%); margin: 40px auto; padding: 20px; }
+    h1 { color: #ffd700; text-align: center; margin: 0 0 25px; }
+    .card { padding: 25px; border-radius: 15px; background: #1b1b1b; box-shadow: 0 0 25px rgba(0,0,0,.45); }
+    label { display: block; margin: 18px 0 8px; font-weight: 700; }
+    input, select { width: 100%; padding: 12px; border: 0; border-radius: 8px; font: inherit; }
+    input[type=file] { background: #333; color: #fff; }
+    hr { margin: 30px 0; border: 0; border-top: 1px solid #444; }
+    .preview { margin-top: 14px; padding: 25px; text-align: center; border: 1px solid #333; border-radius: 15px; background: #101010; }
+    .preview-brand { margin: 0 0 10px; color: #ffd700; font-size: 22px; font-weight: 700; }
+    .preview-stadium { margin: 0 0 20px; font-size: 18px; }
+    #previewStatus { margin: 0 0 15px; color: #ffd700; font-size: clamp(26px, 4vw, 36px); }
+    #previewPairs { margin: 0 0 20px; color: #ff4d4d; font-size: clamp(20px, 3vw, 28px); }
+    #previewImage { width: 100%; max-width: 650px; border: 2px solid #333; border-radius: 15px; }
+    button { width: 100%; margin-top: 18px; padding: 18px; color: #fff; border: 0; border-radius: 10px; background: #06c755; font: 700 20px inherit; cursor: pointer; }
+    button:hover { background: #05a84a; }
+    .publish { background: #0969da; }
+    .publish:hover { background: #0756b1; }
+    .help { margin: 22px 0 0; color: #bbb; font-size: 14px; line-height: 1.5; }
+    #publishStatus { min-height: 24px; margin: 14px 0 0; text-align: center; color: #ffd700; font-weight: 700; }
+    #publishStatus a { display: inline-block; margin-top: 8px; color: #fff; text-decoration: underline; }
+  </style>
 </head>
-
 <body>
+  <main class="container">
+    <h1>GOAL77 Admin v2.1 FINAL</h1>
+    <section class="card">
+      <label for="stadium">ชื่อสนาม</label>
+      <input type="text" id="stadium" placeholder="เช่น สนามไก่ชนตลิ่งงาม เกาะสมุย">
 
-<div class="container">
+      <label for="status">Status</label>
+      <select id="status">
+        <option value="1">🐣 ไก่กำลังเคียง</option>
+        <option value="2">🐥 ตอนนี้เคียงได้...คู่ มีเคียงเพิ่ม</option>
+        <option value="3" selected>🐓 ไก่ลงแล้ว!!</option>
+      </select>
 
-    <h1>🐓 GOAL77 Admin v2.2 FINAL</h1>
+      <label for="pairs">จำนวนคู่ชน</label>
+      <input type="number" id="pairs" min="0" value="22">
 
-    <div class="card">
+      <label for="image">รูปโปรโมต (og-image.jpg)</label>
+      <input type="file" id="image" accept="image/*">
 
-        <label>ชื่อสนาม</label>
+      <label for="imageVersion">รหัสรูปใหม่ (v=)</label>
+      <input type="text" id="imageVersion" placeholder="เช่น 20260804 หรือ 20260804-2">
 
-        <input
-            type="text"
-            id="stadium"
-            placeholder="เช่น สนามไก่ชนหลานตาแหล้ม">
+      <hr>
+      <h2>Preview</h2>
+      <div class="preview">
+        <p class="preview-brand">กลุ่มไก่ใต้ GOAL77 โปรโมชั่นคืนยอดเสีย</p>
+        <p id="previewStadium" class="preview-stadium">-</p>
+        <h3 id="previewStatus">🐓 ไก่ลงแล้ว!!</h3>
+        <h4 id="previewPairs">📋 สรุปไก่ทั้งหมด 22 คู่ชน</h4>
+        <img id="previewImage" src="og-image.jpg" alt="Preview">
+      </div>
+      <button type="button" id="generate">✅ Generate config.js</button>
+      <button type="button" id="downloadIndex">🌐 Download index.html</button>
+      <hr>
+      <h2>อัปเดต GitHub Pages</h2>
+      <label for="githubToken">GitHub Token</label>
+      <input type="password" id="githubToken" autocomplete="off" placeholder="วาง GitHub Token ที่นี่">
+      <p class="help">Token จะใช้เฉพาะตอนกดอัปเดต และไม่ถูกบันทึกในหน้านี้</p>
+      <button type="button" id="publish" class="publish">🚀 อัปเดตเว็บเลย</button>
+      <p id="publishStatus" role="status" aria-live="polite"></p>
+    </section>
+  </main>
 
-        <label>Status</label>
+  <script>
+    (() => {
+      "use strict";
+      const $ = (id) => document.getElementById(id);
+      const stadium = $("stadium"), status = $("status"), pairs = $("pairs"), image = $("image");
+      const version = $("imageVersion"), previewStadium = $("previewStadium"), previewStatus = $("previewStatus");
+      const previewPairs = $("previewPairs"), previewImage = $("previewImage");
 
-        <select id="status">
-
-            <option value="1">
-                🐣 ไก่กำลังเคียง
-            </option>
-
-            <option value="2">
-                🐥 ตอนนี้เคียงได้ XX คู่ มีเคียงเพิ่ม
-            </option>
-
-            <option value="3">
-                ✅ สรุปไก่ทั้งหมด XX คู่ !!!
-            </option>
-
-            <option value="4" selected>
-                🐓 ไก่ลงแล้ว!!
-            </option>
-
-        </select>
-
-        <label>จำนวนคู่ชน</label>
-
-        <input
-            type="number"
-            id="pairs"
-            value="22">
-
-        <label>Poster (og-image.jpg)</label>
-
-        <input
-            type="file"
-            id="image"
-            accept="image/*">
-
-        <label>Version (v=)</label>
-
-        <input
-            type="text"
-            id="imageVersion">
-
-        <hr>
-
-        <h2>Preview</h2>
-
-        <div class="preview">
-
-            <div class="preview-brand">
-                กลุ่มไก่ใต้ GOAL77 โปรโมชั่นคืนยอดเสีย
-            </div>
-
-            <div
-                id="previewStadium"
-                class="preview-stadium">
-            </div>
-
-            <h2 id="previewStatus"></h2>
-
-            <img
-                id="previewImage"
-                src="og-image.jpg">
-
-        </div>
-
-        <hr>
-
-        <h2>GitHub</h2>
-
-        <input
-            type="password"
-            id="githubToken"
-            placeholder="GitHub Personal Access Token">
-
-        <button
-            id="publish"
-            class="publish">
-
-            🚀 Publish
-
-        </button>
-
-        <div id="progress"></div>
-
-        <div id="publishLog"></div>
-
+      function bangkokDate() {
+        const p = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Bangkok", year: "numeric", month: "2-digit", day: "2-digit" })
+          .formatToParts(new Date()).reduce((o, x) => (x.type !== "literal" && (o[x.type] = x.value), o), {});
+        return p.year + p.month + p.day;
+      }
+      version.value = bangkokDate();
+      function data() { return { stadium: stadium.value.trim(), status: Number(status.value), pairs: Math.max(0, parseInt(pairs.value, 10) || 0), imageVersion: version.value.trim() || bangkokDate() }; }
+      function statusText(d) { return d.status === 1 ? "🐣 ไก่กำลังเคียง" : d.status === 2 ? `🐥 ตอนนี้เคียงได้ ${d.pairs} คู่ มีเคียงเพิ่ม` : "🐓 ไก่ลงแล้ว!!"; }
+      function updatePreview() {
+        const d = data(); previewStadium.textContent = d.stadium || "-"; previewStatus.textContent = statusText(d);
+        previewPairs.hidden = d.status !== 3; previewPairs.textContent = `📋 สรุปไก่ทั้งหมด ${d.pairs} คู่ชน`;
+      }
+      function download(name, text, type) {
+        const url = URL.createObjectURL(new Blob([text], { type })), a = document.createElement("a");
+        a.href = url; a.download = name; document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+      }
+      function js(value) { return JSON.stringify(value).replace(/</g, "\\u003c"); }
+      function config(d) { return `const DATA = {\n  brand: ${js("กลุ่มไก่ใต้ GOAL77 โปรโมชั่นคืนยอดเสีย")},\n  stadium: ${js(d.stadium)},\n  pairs: ${d.pairs},\n  status: ${d.status},\n  image: "og-image.jpg",\n  logo: "logo.png",\n  line: "https://lin.ee/Lklfa53"\n};\n`; }
+      function escapeHtml(value) { return String(value || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\"/g,"&quot;").replace(/'/g,"&#39;"); }
+      function indexHtml(d) {
+        const brand = "กลุ่มไก่ใต้ GOAL77 โปรโมชั่นคืนยอดเสีย", site = "https://guckoishiii.github.io/goal77/";
+        const title = statusText(d), description = d.stadium || brand, e = escapeHtml, imageUrl = site + "og-image.jpg?v=" + encodeURIComponent(d.imageVersion);
+        return `<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${e(brand)}</title>
+  <meta name="description" content="${e(description)}">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="${e(title)}">
+  <meta property="og:description" content="${e(description)}">
+  <meta property="og:image" content="${e(imageUrl)}">
+  <meta property="og:url" content="${site}">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="${e(title)}">
+  <meta name="twitter:description" content="${e(description)}">
+  <meta name="twitter:image" content="${e(imageUrl)}">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="wrap">
+    <img src="logo.png" class="logo" alt="GOAL77 Logo">
+    <p class="brand" id="brand"></p><p class="location" id="stadium"></p>
+    <h1 id="status"></h1><h2 id="pairs"></h2>
+    <img id="poster" class="poster" alt="Poster">
+    <a id="line" class="btn">📲 เข้ากลุ่ม LINE</a>
+    <div class="info-box">
+      <h2>🔥 กลุ่มไก่ใต้ GOAL77 โปรโมชั่นคืนยอดเสีย 🔥</h2>
+      <div class="notice">💥 ภาพชัดระดับ <b>HD</b> มีราคากลางอากาศ ยิงสดส่งตรงจากสังเวียน 💥</div>
+      <div class="promo-card"><h3>🎁 โปรโมชั่นคืนยอดเสีย 5% - 15%</h3><div class="promo-item"><span>เสีย 3,000 บาทขึ้นไป</span><strong>รับคืน 5%</strong></div><div class="promo-item"><span>เสีย 10,000 บาทขึ้นไป</span><strong>รับคืน 10%</strong></div><div class="promo-item"><span>เสีย 20,000 บาทขึ้นไป</span><strong>รับคืน 15%</strong></div></div>
+      <div class="promo-card"><h3>🎁 โปรโมชั่นแนะนำเพื่อน</h3><div class="promo-item"><span>รับค่าแนะนำ</span><strong>10%</strong></div></div>
+      <div class="promo-card"><h3>🎁 กิจกรรมพิเศษ</h3><div class="promo-item"><span>ทายคู่ไก่</span><strong>โบนัส 500 บาท</strong></div></div>
     </div>
-
-</div>
-
-<script src="template.js"></script>
-
-<script src="github.js"></script>
-
-<script src="admin.js"></script>
-
+  </div>
+  <script src="config.js"><\/script>
+  <script>
+    (function () {
+      var d = DATA, pairsEl = document.getElementById("pairs"), text = "";
+      document.getElementById("brand").textContent = d.brand; document.getElementById("stadium").textContent = d.stadium;
+      document.getElementById("poster").src = d.image; document.getElementById("poster").alt = d.brand; document.getElementById("line").href = d.line;
+      if (Number(d.status) === 1) { text = "🐣 ไก่กำลังเคียง"; pairsEl.hidden = true; }
+      else if (Number(d.status) === 2) { text = "🐥 ตอนนี้เคียงได้ " + d.pairs + " คู่ มีเคียงเพิ่ม"; pairsEl.hidden = true; }
+      else { text = "🐓 ไก่ลงแล้ว!!"; pairsEl.textContent = "📋 สรุปไก่ทั้งหมด " + d.pairs + " คู่ชน"; }
+      document.getElementById("status").textContent = text;
+    }());
+  <\/script>
+</body>
+</html>`;
+      }
+      [stadium, status, pairs, version].forEach(x => { x.addEventListener("input", updatePreview); x.addEventListener("change", updatePreview); });
+      image.addEventListener("change", () => { const file = image.files[0]; if (file) previewImage.src = URL.createObjectURL(file); });
+      $("generate").addEventListener("click", () => download("config.js", config(data()), "text/javascript;charset=utf-8"));
+      $("downloadIndex").addEventListener("click", () => download("index.html", indexHtml(data()), "text/html;charset=utf-8"));
+      function base64FromBytes(bytes) {
+        const chunkSize = 0x8000; let binary = "";
+        for (let offset = 0; offset < bytes.length; offset += chunkSize) binary += String.fromCharCode(...bytes.subarray(offset, offset + chunkSize));
+        return btoa(binary);
+      }
+      function base64FromText(text) { return base64FromBytes(new TextEncoder().encode(text)); }
+      async function getFileSha(path, token) {
+        const response = await fetch(`https://api.github.com/repos/guckoishiii/goal77/contents/${path}?ref=main`, { headers: { Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json" } });
+        if (response.status === 404) return undefined;
+        if (!response.ok) throw new Error(`GitHub อ่าน ${path} ไม่สำเร็จ`);
+        return (await response.json()).sha;
+      }
+      async function putFile(path, content, token) {
+        const sha = await getFileSha(path, token);
+        const response = await fetch(`https://api.github.com/repos/guckoishiii/goal77/contents/${path}`, {
+          method: "PUT",
+          headers: { Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json", "Content-Type": "application/json" },
+          body: JSON.stringify({ message: "Update GOAL77 from Admin", branch: "main", content, ...(sha ? { sha } : {}) })
+        });
+        if (!response.ok) {
+          const detail = await response.json().catch(() => ({}));
+          throw new Error(detail.message || `GitHub อัปโหลด ${path} ไม่สำเร็จ`);
+        }
+      }
+      $("publish").addEventListener("click", async () => {
+        const token = $("githubToken").value.trim(), statusBox = $("publishStatus"), button = $("publish"), selectedImage = image.files[0];
+        if (!token) { statusBox.textContent = "กรุณาวาง GitHub Token ก่อน"; return; }
+        if (!selectedImage) { statusBox.textContent = "กรุณาเลือกรูป og-image.jpg ก่อนอัปเดต"; return; }
+        button.disabled = true;
+        statusBox.textContent = "กำลังอัปโหลดรูปและอัปเดตหน้าเว็บ…";
+        try {
+          const d = data();
+          await putFile("og-image.jpg", base64FromBytes(new Uint8Array(await selectedImage.arrayBuffer())), token);
+          await putFile("config.js", base64FromText(config(d)), token);
+          await putFile("index.html", base64FromText(indexHtml(d)), token);
+          statusBox.replaceChildren(
+            document.createTextNode("อัปเดตสำเร็จ! รอ GitHub Pages ประมาณ 1–2 นาที"),
+            document.createElement("br"),
+            Object.assign(document.createElement("a"), { href: "https://guckoishiii.github.io/goal77/", target: "_blank", rel: "noopener noreferrer", textContent: "เปิดหน้าเว็บจริง ↗" })
+          );
+          $("githubToken").value = "";
+        } catch (error) {
+          statusBox.textContent = `อัปเดตไม่สำเร็จ: ${error.message}`;
+        } finally { button.disabled = false; }
+      });
+      updatePreview();
+    })();
+  </script>
 </body>
 </html>
