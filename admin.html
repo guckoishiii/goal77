@@ -49,8 +49,21 @@
       <label for="image">รูปโปรโมต (og-image.jpg)</label>
       <input type="file" id="image" accept="image/*">
 
-      <label for="imageVersion">รหัสรูปใหม่ (v=)</label>
-      <input type="text" id="imageVersion" placeholder="เช่น 20260804 หรือ 20260804-2">
+     <label for="gallery">
+    รูปเพิ่มเติม (Gallery)
+</label>
+
+<input
+    type="file"
+    id="gallery"
+    accept="image/*"
+    multiple>
+
+<p class="help">
+    สามารถเลือกได้หลายรูป
+</p>
+
+<div id="galleryPreview"></div>
 
       <hr>
       <h2>Preview</h2>
