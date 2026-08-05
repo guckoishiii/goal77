@@ -211,14 +211,40 @@
   <script src="config.js"><\/script>
   <script>
     (function () {
-      var d = DATA, pairsEl = document.getElementById("pairs"), text = "";
-      document.getElementById("brand").textContent = d.brand; document.getElementById("stadium").textContent = d.stadium;
-      document.getElementById("poster").src = d.image; document.getElementById("poster").alt = d.brand; document.getElementById("line").href = d.line;
-      if (Number(d.status) === 1) { text = "🐣 ไก่กำลังเคียง"; pairsEl.hidden = true; }
-      else if (Number(d.status) === 2) { text = "🐥 ตอนนี้เคียงได้ " + d.pairs + " คู่ มีเคียงเพิ่ม"; pairsEl.hidden = true; }
-      else { text = "🐓 ไก่ลงแล้ว!!"; pairsEl.textContent = "📋 สรุปไก่ทั้งหมด " + d.pairs + " คู่ชน"; }
-      document.getElementById("status").textContent = text;
-    }());
+    var d = DATA,
+        pairsEl = document.getElementById("pairs"),
+        text = "";
+
+    ...
+
+    if (Number(d.status) === 1) {
+
+        text = "🐣 ไก่กำลังเคียง";
+
+        pairsEl.hidden = true;
+
+    }
+
+    else if (Number(d.status) === 2) {
+
+        text = "🐥 ตอนนี้เคียงได้ " + d.pairs + " คู่ มีเคียงเพิ่ม";
+
+        pairsEl.hidden = true;
+
+    }
+
+    else {
+
+        text = "🐓 ไก่ลงแล้ว!!";
+
+        pairsEl.textContent =
+        "📋 สรุปไก่ทั้งหมด " + d.pairs + " คู่ชน";
+
+    }
+
+    document.getElementById("status").textContent = text;
+
+}());
   <\/script>
 </body>
 </html>`;
